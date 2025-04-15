@@ -1,0 +1,33 @@
+{
+    "title": "Chat with Ollama",
+    "chat": {
+        "placeholder": "Type your message...",
+        "send": "Send",
+        "clear": "Clear History",
+        "connecting": "Connecting...",
+        "connected": "Connected",
+        "disconnected": "Disconnected",
+        "error": "An error occurred",
+        "start": "Start a conversation"
+    },
+    "file": {
+        "upload": "Upload File",
+        "remove": "Remove",
+        "error": "Error uploading file"
+    },
+    "model": {
+        "title": "Model Management",
+        "add": "Add Model",
+        "edit": "Edit",
+        "delete": "Delete",
+        "save": "Save",
+        "cancel": "Cancel",
+        "name": "Name",
+        "url": "Base URL",
+        "modelName": "Model Name",
+        "description": "Description",
+        "default": "Default Model",
+        "setDefault": "Set as Default",
+        "error": "Error managing model"
+    }
+}

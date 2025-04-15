@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.stylefeng.guns.modular.qa.mapper.QAMapper">
+
+    <resultMap id="BaseResultMap" type="cn.stylefeng.guns.modular.qa.entity.QA">
+        <id column="id" property="id"/>
+        <result column="question" property="question"/>
+        <result column="answer" property="answer"/>
+        <result column="district" property="district"/>
+        <result column="department" property="department"/>
+        <result column="keywords" property="keywords"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="is_active" property="isActive"/>
+        <result column="deleted" property="deleted"/>
+    </resultMap>
+
+    <select id="findByDistrictAndDepartment" resultMap="BaseResultMap">
+        SELECT * FROM qas
+        WHERE district = #{district}
+        AND department = #{department}
+        AND deleted = 0
+        AND is_active = 1
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="findByKeywords" resultMap="BaseResultMap">
+        SELECT * FROM qas
+        WHERE keywords LIKE CONCAT('%', #{keyword}, '%')
+        AND deleted = 0
+        AND is_active = 1
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="findByCreateTimeBetween" resultMap="BaseResultMap">
+        SELECT * FROM qas
+        WHERE create_time BETWEEN #{startTime} AND #{endTime}
+        AND deleted = 0
+        AND is_active = 1
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="searchQAs" resultMap="BaseResultMap">
+        SELECT * FROM qas
+        <where>
+            AND deleted = 0
+            AND is_active = 1
+            <if test="district != null and district != ''">
+                AND district = #{district}
+            </if>
+            <if test="department != null and department != ''">
+                AND department = #{department}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND keywords LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="startTime != null">
+                AND create_time >= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND create_time &lt;= #{endTime}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

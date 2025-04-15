@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.stylefeng.guns.modular.chathistory.mapper.ChatHistoryMapper">
+
+    <resultMap id="BaseResultMap" type="cn.stylefeng.guns.modular.chathistory.entity.ChatHistory">
+        <id column="id" property="id"/>
+        <result column="session_id" property="sessionId"/>
+        <result column="user_id" property="userId"/>
+        <result column="question" property="question"/>
+        <result column="answer" property="answer"/>
+        <result column="create_time" property="createTime"/>
+        <result column="district" property="district"/>
+        <result column="department" property="department"/>
+        <result column="keywords" property="keywords"/>
+        <result column="deleted" property="deleted"/>
+    </resultMap>
+
+    <select id="findBySessionIdOrderByCreateTimeDesc" resultMap="BaseResultMap">
+        SELECT * FROM chat_history
+        WHERE session_id = #{sessionId}
+        AND deleted = 0
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="findBySessionIdOrderByCreateTimeAsc" resultMap="BaseResultMap">
+        SELECT * FROM chat_history
+        WHERE session_id = #{sessionId}
+        AND deleted = 0
+        ORDER BY create_time ASC
+    </select>
+
+    <select id="findByUserIdOrderByCreateTimeDesc" resultMap="BaseResultMap">
+        SELECT * FROM chat_history
+        WHERE user_id = #{userId}
+        AND deleted = 0
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="findTopByUserIdOrderByCreateTimeDesc" resultMap="BaseResultMap">
+        SELECT * FROM chat_history
+        WHERE user_id = #{userId}
+        AND deleted = 0
+        ORDER BY create_time DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="searchChatHistory" resultMap="BaseResultMap">
+        SELECT * FROM chat_history
+        <where>
+            AND deleted = 0
+            <if test="userId != null and userId != ''">
+                AND user_id = #{userId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (question LIKE CONCAT('%', #{keyword}, '%') OR answer LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="startTime != null">
+                AND create_time >= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND create_time &lt;= #{endTime}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <update id="deleteBySessionId">
+        UPDATE chat_history
+        SET deleted = 1
+        WHERE session_id = #{sessionId}
+        AND deleted = 0
+    </update>
+
+    <update id="deleteByUserId">
+        UPDATE chat_history
+        SET deleted = 1
+        WHERE user_id = #{userId}
+        AND deleted = 0
+    </update>
+
+    <select id="findFrequentQuestions" resultType="java.lang.String">
+        SELECT question FROM chat_history
+        WHERE user_id = #{userId}
+        AND deleted = 0
+        GROUP BY question
+        ORDER BY COUNT(question) DESC
+    </select>
+
+    <select id="findRelatedQuestions" resultType="java.lang.String">
+        SELECT DISTINCT question FROM chat_history
+        WHERE deleted = 0
+        AND (
+            question LIKE CONCAT('%', #{question}, '%')
+            OR #{question} LIKE CONCAT('%', question, '%')
+        )
+        LIMIT 5
+    </select>
+
+</mapper>

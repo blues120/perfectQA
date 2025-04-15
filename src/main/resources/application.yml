@@ -1,0 +1,100 @@
+server:
+  port: 8080
+  max-http-header-size: 10240
+
+spring:
+  application:
+    name: guns-main-project
+  profiles:
+    active: dev
+  mvc:
+    view:
+      prefix: /pages
+  servlet:
+    multipart:
+      max-request-size: 8GB
+      max-file-size: 8GB
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss.SSS
+    locale: zh_CN
+    serialization:
+      indent_output: false
+  flyway:
+    enabled: false
+    locations: classpath:db/migration/mysql
+    # 当迁移时发现目标schema非空，而且带有没有元数据的表时，是否自动执行基准迁移
+    baseline-on-migrate: true
+    # 是否允许无序的迁移 开发环境最好开启, 生产环境关闭
+    out-of-order: true
+    # 关闭占位符替换，因为插入的sql里边可能包含${}关键字
+    placeholder-replacement: false
+
+# 资源扫描
+scanner:
+  open: true
+
+# 日志记录
+sys-log:
+  # db-数据库，file-文件
+  type: db
+  file-save-path: _sys_logs
+
+mybatis-plus:
+  mapper-locations: classpath*:cn/stylefeng/**/mapping/*.xml,classpath*:cn/stylefeng/guns/**/mapping/*.xml, classpath:/META-INF/modeler-mybatis-mappings/*.xml
+  configuration-properties:
+    prefix:
+    blobType: BLOB
+    boolValue: TRUE
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+    lazy-loading-enabled: true
+    multiple-result-sets-enabled: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    banner: false
+    enable-sql-runner: true
+    db-config:
+      id-type: assign_id
+      TableName-underline: true
+
+# 单点登录开关
+sso:
+  openFlag: false
+  sso-client-type: server
+
+# 登录时，密码对称加密的秘钥
+# 可以用如下代码，从新生成秘钥对：
+# RSA rsa = new RSA();rsa.getPublicKeyBase64();rsa.getPrivateKeyBase64();
+guns:
+  password:
+    rsa:
+      public-key: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCochIaKWEh6IIK1pJQcJPsYhZ2AJmGNc12XeC2lsj3dHkMO9vGrXN4ZJiN3qNLlO3hERtY0UZdN8Uz18zoiL60XoOclMuuwf1TwiMA3/4Vy2NOaQdX/RgLQ8XiRobVPLMe/JTteZ6eoPrWVC5jf4kdWD7LWwgdWrnzGs/4UiWnsQIDAQAB
+      private-key: MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAKhyEhopYSHoggrWklBwk+xiFnYAmYY1zXZd4LaWyPd0eQw728atc3hkmI3eo0uU7eERG1jRRl03xTPXzOiIvrReg5yUy67B/VPCIwDf/hXLY05pB1f9GAtDxeJGhtU8sx78lO15np6g+tZULmN/iR1YPstbCB1aufMaz/hSJaexAgMBAAECgYB7SgK141OU3flQtXyiI8QhYCnQdN/pu7eGy2+ONQ8jD70Jl0ZlRM8fb4G5VRtwVrFF6p95grNdx1QvfeQczvnFF86mRaOOmrwT7k33B01Vb/Huvxx4N9DZ4/74Kf2nQz7c/fQwUraej/jcywHAmuJvtN1E3UktCUaHIA24MrtqAQJBAO+ZMLnHCVEt2xf6LKpdlowk+mulD5DMTdnctVZGUY77SEaQwH6FdOrYNHTgcTHixJYXqNcCUGE+HtwUQ7lDaAUCQQCz+fj7lbOf44uQ37TX2FwUrgaJBcQhchIuLP7zYWIHr8+OIfxxPcneUIEP0FxgP6auReimcgU70Bts50u8TSy9AkEAyC0ymmQCEsK/A59OZd/fAaN7XSgAgzdN67EMB9KkHVMvpVUWnh4d+n88BFHoAIe3Orb1pv0V7siZu8Fqe4QniQJBAKuGxeEg37y2pMFCM5yzO68J3Hii4jXt/Z28jI9wdHlW+b1AbtOOS+JxX0+vCRtCDp1xSzW23X4P7NNx7SBdfRECQQDh/S4wH45yBkXsuySS6JA5fTsu8TCMxlOkm1/X44zki9HAJPjFlZgv0Bx9ipNpikRgJ0eYoIQI0nkQ1huQoX6e
+
+# 第三方支付的接入
+yungouos:
+  # 聚合支付，服务器url，一般为固定不用改
+  merge-pay-url: https://api.pay.yungouos.com/api/pay/merge/nativePay
+  # 微信商户id
+  wx-shop-id: x
+  # 支付宝商户id
+  ali-shop-id: x
+  # 聚合支付秘钥
+  merge-pay-secret: x
+  # 聚合支付，支付成功的回调地址
+  merge-pay-notify-url: https://www.demo.com/api/order/theNotify
+  # 聚合支付成功的跳转url，可以不填写
+  merge-pay-return-url: https://www.demo.com/order/list
+  # 聚合支付的商户id
+  merge-pay-shop-id: x
+  # 支付宝支付的秘钥
+  pay-ali-key: x
+  # 微信支付的秘钥
+  pay-wx-key: x
+
+milvus:
+  host: localhost
+  port: 19530
+

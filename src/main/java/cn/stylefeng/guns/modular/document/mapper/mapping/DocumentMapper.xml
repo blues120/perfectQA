@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.stylefeng.guns.modular.document.mapper.DocumentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.stylefeng.guns.modular.document.entity.Document">
+        <id column="id" property="id"/>
+        <result column="file_name" property="fileName"/>
+        <result column="file_id" property="fileId"/>
+        <result column="content_type" property="contentType"/>
+        <result column="content" property="content"/>
+        <result column="district" property="district"/>
+        <result column="department" property="department"/>
+        <result column="keywords" property="keywords"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="segment_count" property="segmentCount"/>
+        <result column="file_size" property="fileSize"/>
+        <result column="file_path" property="filePath"/>
+        <result column="status" property="status"/>
+        <result column="deleted" property="deleted"/>
+    </resultMap>
+
+    <!-- 根据关键词、区域和部门搜索文档 -->
+    <select id="searchDocuments" resultMap="BaseResultMap">
+        SELECT * FROM documents
+        WHERE deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND (
+                keywords LIKE CONCAT('%', #{keyword}, '%')
+                OR content LIKE CONCAT('%', #{keyword}, '%')
+                OR file_name LIKE CONCAT('%', #{keyword}, '%')
+            )
+        </if>
+        <if test="district != null and district != ''">
+            AND district = #{district}
+        </if>
+        <if test="department != null and department != ''">
+            AND department = #{department}
+        </if>
+        <if test="startTime != null">
+            AND create_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND create_time &lt;= #{endTime}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 获取与特定关键词相关的文档 -->
+    <select id="findByKeyword" resultMap="BaseResultMap">
+        SELECT * FROM documents
+        WHERE deleted = 0
+        AND (
+            keywords LIKE CONCAT('%', #{keyword}, '%')
+            OR content LIKE CONCAT('%', #{keyword}, '%')
+        )
+        ORDER BY create_time DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 根据创建用户查询文档 -->
+    <select id="findByCreateUser" resultMap="BaseResultMap">
+        SELECT * FROM documents
+        WHERE deleted = 0
+        AND create_user = #{createUser}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据状态查询文档 -->
+    <select id="findByStatus" resultMap="BaseResultMap">
+        SELECT * FROM documents
+        WHERE deleted = 0
+        AND status = #{status}
+        ORDER BY create_time DESC
+    </select>
+</mapper>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.stylefeng.guns.modular.agent.mapper.AgentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.stylefeng.guns.modular.agent.entity.Agent">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="config" property="config"/>
+        <result column="type" property="type"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="is_enabled" property="isEnabled"/>
+        <result column="sort_order" property="sortOrder"/>
+        <result column="deleted" property="deleted"/>
+    </resultMap>
+
+    <!-- 搜索代理 -->
+    <select id="searchAgents" resultMap="BaseResultMap">
+        SELECT * FROM agents
+        WHERE deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND (
+                name LIKE CONCAT('%', #{keyword}, '%')
+                OR description LIKE CONCAT('%', #{keyword}, '%')
+            )
+        </if>
+        <if test="type != null and type != ''">
+            AND type = #{type}
+        </if>
+        <if test="status != null and status != ''">
+            AND status = #{status}
+        </if>
+        <if test="isEnabled != null">
+            AND is_enabled = #{isEnabled}
+        </if>
+        <if test="startTime != null">
+            AND create_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND create_time &lt;= #{endTime}
+        </if>
+        ORDER BY sort_order ASC, create_time DESC
+    </select>
+
+    <!-- 获取启用的代理 -->
+    <select id="findEnabledAgents" resultMap="BaseResultMap">
+        SELECT * FROM agents
+        WHERE deleted = 0
+        AND is_enabled = 1
+        ORDER BY sort_order ASC, create_time DESC
+    </select>
+
+    <!-- 根据类型查询代理 -->
+    <select id="findByType" resultMap="BaseResultMap">
+        SELECT * FROM agents
+        WHERE deleted = 0
+        AND type = #{type}
+        ORDER BY sort_order ASC, create_time DESC
+    </select>
+
+    <!-- 根据创建用户查询代理 -->
+    <select id="findByCreateUser" resultMap="BaseResultMap">
+        SELECT * FROM agents
+        WHERE deleted = 0
+        AND create_user = #{createUser}
+        ORDER BY create_time DESC
+    </select>
+</mapper>

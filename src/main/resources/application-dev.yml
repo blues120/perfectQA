@@ -1,0 +1,29 @@
+# Mysql数据库
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://123.182.141.106:3306/kefu?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
+    username: root
+    password: hsmPYE#svA&z&qqt
+
+    # 连接池大小根据实际情况调整
+    max-active: 100
+    max-pool-prepared-statement-per-connection-size: 100
+  redis:
+    database: 9
+    host: 123.182.141.106
+    password: Ab@123456
+    pool:
+      max-active: 10
+      max-idle: 10
+      max-wait: 2000
+      min-idle: 2
+    port: 6379
+    timeout: 2000
+
+guns:
+  minio:
+    endpoint: http://123.182.141.106:18092
+    access-key: kLJOtnv0hYExZKzGLuYb
+    secret-key: TxnY6rntirDxX35nLv9DFw5tfkEKTelV1wbdOQv3
+    bucket: public
